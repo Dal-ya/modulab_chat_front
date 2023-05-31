@@ -1,5 +1,6 @@
 import AuthorCard from './AuthorCard';
 import React, { useState } from 'react';
+import { PaintData } from '../lib/type';
 
 const authorList = [
   {
@@ -28,8 +29,10 @@ const authorList = [
   },
 ];
 
-const PaintForm = () => {
+const PaintForm = ({ onCreatePaint }: { onCreatePaint: (payload: PaintData) => void }) => {
   const [authors, setAuthors] = useState(authorList);
+  const [description, setDescription] = useState('');
+
   const onAuthorCardClick = (id: number) => {
     const newAuthors = authors.map((author) => {
       if (author.id === id) {
@@ -43,7 +46,17 @@ const PaintForm = () => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('on submit!');
+
+    const activeAuthor = authors.find((author) => author.isActive);
+
+    if (activeAuthor) {
+      onCreatePaint({
+        author: activeAuthor.engName,
+        description,
+      });
+    } else {
+      alert('작가를 선택해주세요!');
+    }
   };
 
   return (
@@ -76,6 +89,10 @@ const PaintForm = () => {
           </div>
           <input
             type="text"
+            value={description}
+            onChange={(event) => {
+              setDescription(event.target.value);
+            }}
             maxLength={100}
             placeholder="예) 고양이 한 마리가 카페 테라스에 앉아 있다."
             className="input w-full max-w-lg"
