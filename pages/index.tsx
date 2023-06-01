@@ -4,6 +4,7 @@ import usePaint from '../hooks/usePaint';
 import { useEffect, useState } from 'react';
 import LoadingAnimation from '../components/LoadingAnimation';
 import Portal from '../components/Portal';
+import PaintModal from '../components/PaintModal';
 
 const Home = () => {
   const [paintUrl, setPaintUrl] = useState('');
@@ -46,6 +47,8 @@ const Home = () => {
           <LoadingAnimation />
         </Portal>
       )}
+
+      <PaintModal />
     </div>
   );
 };
