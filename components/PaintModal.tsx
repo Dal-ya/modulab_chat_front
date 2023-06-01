@@ -1,30 +1,36 @@
-import { useState } from 'react';
+import Image from 'next/image';
 
-const PaintModal = () => {
-  const [isShowModal, setIsShowModal] = useState(true);
-
-  const onChangeShowModal = () => {
-    setIsShowModal(!isShowModal);
-  };
-
+const PaintModal = ({
+  paintUrl,
+  onHandleModal,
+  onPaintDownload,
+}: {
+  paintUrl: string;
+  onHandleModal: (isShow: boolean) => void;
+  onPaintDownload: () => void;
+}) => {
   return (
     <div>
-      {/*<label htmlFor="my-modal-5" className="btn">*/}
-      {/*  open modal*/}
-      {/*</label>*/}
-      {/*<input type="checkbox" id="my-modal-5" className="modal-toggle" checked={isShowModal} />*/}
       <div className="modal modal-open">
-        <div className="modal-box w-11/12 max-w-5xl">
-          <h3 className="font-bold text-lg">Congratulations random Internet user!</h3>
-          <p className="py-4">
-            You've been selected for a chance to get one year of subscription to use Wikipedia for
-            free!
-          </p>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">그림을 감상해 보세요</h3>
+          <div className="py-4">
+            <Image src={paintUrl} width={500} height={500} alt={'dall-e'} />
+          </div>
+
           <div className="modal-action">
-            {/*<label htmlFor="my-modal-5" className="btn">*/}
-            {/*  Yay!*/}
-            {/*</label>*/}
-            <button className="btn" onClick={onChangeShowModal} />
+            <button className="btn btn-active btn-ghost" onClick={onPaintDownload}>
+              다운로드
+            </button>
+            <button className="btn btn-active btn-ghost">저장하기</button>
+            <button
+              className="btn"
+              onClick={() => {
+                onHandleModal(false);
+              }}
+            >
+              닫기
+            </button>
           </div>
         </div>
       </div>

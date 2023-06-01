@@ -5,16 +5,44 @@ import { useEffect, useState } from 'react';
 import LoadingAnimation from '../components/LoadingAnimation';
 import Portal from '../components/Portal';
 import PaintModal from '../components/PaintModal';
+import { convertUrlToBlob } from '../utils/helpers';
 
 const Home = () => {
   const [paintUrl, setPaintUrl] = useState('');
   const [isShowLoading, setIsShowLoading] = useState(false);
+  const [isShowModal, setIsShowModal] = useState(false);
+  const [paintBlobData, setPaintBlobData] = useState<Blob | null>(null);
   const { trigger, isMutating } = usePaint();
   const onCreatePaint = async (payload: PaintData) => {
+    // init
+    setPaintUrl('');
+
     // @ts-ignore
     const response = await trigger(payload);
 
+    if (!response?.data.url) {
+      alert('이미지가 없습니다. 다시 시도해 주세요.');
+      return;
+    }
+
     setPaintUrl(response?.data.url);
+
+    // 저장하기, 다운로드를 위해 미리 blob 파일 준비하기
+    const blobData = await convertUrlToBlob(response?.data.url);
+    if (blobData) {
+      setPaintBlobData(blobData);
+    } else {
+      setPaintBlobData(null);
+    }
+  };
+
+  const onPaintDownload = () => {
+    if (paintBlobData) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(paintBlobData);
+      a.download = 'paint_by_gpt.png';
+      a.click();
+    }
   };
 
   useEffect(() => {
@@ -30,6 +58,14 @@ const Home = () => {
       clearTimeout(sid);
     };
   });
+
+  useEffect(() => {
+    if (paintUrl) {
+      setIsShowModal(true);
+    } else {
+      setIsShowModal(false);
+    }
+  }, [paintUrl]);
 
   return (
     <div className="container mx-auto px-4 max-w-3xl bg-amber-50 rounded-lg mt-14 pb-8 pt-8">
@@ -48,7 +84,13 @@ const Home = () => {
         </Portal>
       )}
 
-      <PaintModal />
+      {isShowModal && (
+        <PaintModal
+          paintUrl={paintUrl}
+          onHandleModal={setIsShowModal}
+          onPaintDownload={onPaintDownload}
+        />
+      )}
     </div>
   );
 };
