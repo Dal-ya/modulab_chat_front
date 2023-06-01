@@ -1,10 +1,13 @@
 import PaintForm from '../components/PaintForm';
 import { PaintData } from '../lib/type';
 import usePaint from '../hooks/usePaint';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import LoadingAnimation from '../components/LoadingAnimation';
+import Portal from '../components/Portal';
 
 const Home = () => {
   const [paintUrl, setPaintUrl] = useState('');
+  const [isShowLoading, setIsShowLoading] = useState(false);
   const { trigger, isMutating } = usePaint();
   const onCreatePaint = async (payload: PaintData) => {
     // @ts-ignore
@@ -12,6 +15,20 @@ const Home = () => {
 
     setPaintUrl(response?.data.url);
   };
+
+  useEffect(() => {
+    let sid: NodeJS.Timeout;
+    if (isMutating) {
+      sid = setTimeout(() => {
+        setIsShowLoading(true);
+      }, 1300);
+    } else {
+      setIsShowLoading(false);
+    }
+    return () => {
+      clearTimeout(sid);
+    };
+  });
 
   return (
     <div className="container mx-auto px-4 max-w-3xl bg-amber-50 rounded-lg mt-14 pb-8 pt-8">
@@ -21,9 +38,14 @@ const Home = () => {
           <span className="relative text-white">with GPT-3.5</span>
         </span>
       </h1>
-      {isMutating && <div>loading...</div>}
-      {paintUrl && <div>{paintUrl}</div>}
-      <PaintForm onCreatePaint={onCreatePaint} />
+
+      <PaintForm onCreatePaint={onCreatePaint} isLoading={isMutating} />
+
+      {isShowLoading && (
+        <Portal>
+          <LoadingAnimation />
+        </Portal>
+      )}
     </div>
   );
 };

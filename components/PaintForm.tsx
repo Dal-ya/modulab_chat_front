@@ -29,7 +29,13 @@ const authorList = [
   },
 ];
 
-const PaintForm = ({ onCreatePaint }: { onCreatePaint: (payload: PaintData) => void }) => {
+const PaintForm = ({
+  onCreatePaint,
+  isLoading,
+}: {
+  onCreatePaint: (payload: PaintData) => void;
+  isLoading: boolean;
+}) => {
   const [authors, setAuthors] = useState(authorList);
   const [description, setDescription] = useState('');
 
@@ -97,10 +103,11 @@ const PaintForm = ({ onCreatePaint }: { onCreatePaint: (payload: PaintData) => v
             placeholder="예) 고양이 한 마리가 카페 테라스에 앉아 있다."
             className="input w-full max-w-lg"
             required={true}
+            disabled={isLoading}
           />
         </div>
         <div className="mt-4">
-          <button type="submit" className="btn btn-accent">
+          <button type="submit" className="btn btn-accent" disabled={isLoading}>
             생성하기
           </button>
         </div>
