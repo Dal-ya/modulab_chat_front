@@ -25,8 +25,6 @@ const Home = () => {
       return;
     }
 
-    setPaintUrl(response?.data.url);
-
     // 저장하기, 다운로드를 위해 미리 blob 파일 준비하기
     const blobData = await convertUrlToBlob(response?.data.url);
     if (blobData) {
@@ -34,14 +32,19 @@ const Home = () => {
     } else {
       setPaintBlobData(null);
     }
+
+    setPaintUrl(response?.data.url);
   };
 
   const onPaintDownload = () => {
     if (paintBlobData) {
+      const url = URL.createObjectURL(paintBlobData);
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(paintBlobData);
+      a.href = url;
       a.download = 'paint_by_gpt.png';
       a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
   };
 
