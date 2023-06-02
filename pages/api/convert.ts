@@ -2,12 +2,14 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { imgUrl } = req.query;
-    if (!imgUrl) {
+    const { url } = req.headers;
+    if (!url) {
       throw new Error('img url 이 없습니다');
     }
 
-    const response = await fetch(imgUrl as string);
+    console.log('img url: ', url);
+
+    const response = await fetch(url as string);
     const blob = await response.blob();
     const arrayBuffer = await blob.arrayBuffer();
 

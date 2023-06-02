@@ -28,6 +28,8 @@ const Home = () => {
       return;
     }
 
+    console.log(response.data.url);
+
     setPaintUrl(response?.data.url);
 
     // 저장하기, 다운로드를 위해 미리 blob 파일 준비하기
