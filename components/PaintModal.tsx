@@ -4,10 +4,12 @@ const PaintModal = ({
   paintUrl,
   onHandleModal,
   onPaintDownload,
+  paintBlobData,
 }: {
   paintUrl: string;
   onHandleModal: (isShow: boolean) => void;
   onPaintDownload: () => void;
+  paintBlobData: Blob | null;
 }) => {
   return (
     <div>
@@ -19,10 +21,16 @@ const PaintModal = ({
           </div>
 
           <div className="modal-action">
-            <button className="btn btn-active btn-ghost" onClick={onPaintDownload}>
+            <button
+              className="btn btn-active btn-ghost"
+              onClick={onPaintDownload}
+              disabled={!paintBlobData}
+            >
               다운로드
             </button>
-            <button className="btn btn-active btn-ghost">저장하기</button>
+            <button className="btn btn-active btn-ghost" disabled={!paintBlobData}>
+              저장하기
+            </button>
             <button
               className="btn"
               onClick={() => {

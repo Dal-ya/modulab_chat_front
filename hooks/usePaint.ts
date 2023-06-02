@@ -2,11 +2,13 @@ import { PaintData } from '../lib/type';
 import axios from 'axios';
 import useSWRMutation from 'swr/mutation';
 
-const sendPaintData = async (url: string, { payload }: { payload: PaintData }) => {
+// Fetcher 구현.
+// 추가 인수는 두 번째 매개변수의 `arg` 속성을 통해 전달됩니다.
+const sendPaintData = async (url: string, { arg }: { arg: PaintData }) => {
   return axios({
     url,
     method: 'POST',
-    data: payload,
+    data: arg,
   });
 };
 

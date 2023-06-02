@@ -14,16 +14,21 @@ const Home = () => {
   const [paintBlobData, setPaintBlobData] = useState<Blob | null>(null);
   const { trigger, isMutating } = usePaint();
   const onCreatePaint = async (payload: PaintData) => {
+    console.log('payload create paint:  ', payload);
     // init
     setPaintUrl('');
+    setPaintBlobData(null);
 
     // @ts-ignore
     const response = await trigger(payload);
 
+    // 이미지 url 이 없는 경우
     if (!response?.data.url) {
-      alert('이미지가 없습니다. 다시 시도해 주세요.');
+      alert('생성된 이미지가 없습니다. 다시 시도해 주세요.');
       return;
     }
+
+    setPaintUrl(response?.data.url);
 
     // 저장하기, 다운로드를 위해 미리 blob 파일 준비하기
     const blobData = await convertUrlToBlob(response?.data.url);
@@ -32,8 +37,6 @@ const Home = () => {
     } else {
       setPaintBlobData(null);
     }
-
-    setPaintUrl(response?.data.url);
   };
 
   const onPaintDownload = () => {
@@ -45,11 +48,14 @@ const Home = () => {
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
+    } else {
+      alert('잠시 후 다시 시도해 주세요.');
     }
   };
 
   useEffect(() => {
     let sid: NodeJS.Timeout;
+    console.log('ismutating: ', isMutating);
     if (isMutating) {
       sid = setTimeout(() => {
         setIsShowLoading(true);
@@ -71,7 +77,10 @@ const Home = () => {
   }, [paintUrl]);
 
   return (
-    <div className="container mx-auto px-4 max-w-3xl bg-amber-50 rounded-lg mt-14 pb-8 pt-8">
+    <div className="container mx-auto px-4 max-w-3xl bg-amber-50 rounded-lg mt-4 pb-8 pt-8">
+      <p>
+        <small>*데스크톱 화면(1260px)에 맞추어 제작 되었습니다.</small>
+      </p>
       <h1 className="text-3xl text-black font-bold p-4 text-center mb-10">
         화가 스타일로 그림 만들기&nbsp;
         <span className="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
@@ -92,6 +101,7 @@ const Home = () => {
           paintUrl={paintUrl}
           onHandleModal={setIsShowModal}
           onPaintDownload={onPaintDownload}
+          paintBlobData={paintBlobData}
         />
       )}
     </div>
