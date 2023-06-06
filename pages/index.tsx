@@ -14,7 +14,6 @@ const Home = () => {
   const [paintBlobData, setPaintBlobData] = useState<Blob | null>(null);
   const { trigger, isMutating } = usePaint();
   const onCreatePaint = async (payload: PaintData) => {
-    console.log('payload create paint:  ', payload);
     // init
     setPaintUrl('');
     setPaintBlobData(null);
@@ -27,8 +26,6 @@ const Home = () => {
       alert('생성된 이미지가 없습니다. 다시 시도해 주세요.');
       return;
     }
-
-    console.log(response.data.url);
 
     setPaintUrl(response?.data.url);
 

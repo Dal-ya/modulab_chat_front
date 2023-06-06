@@ -6,12 +6,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const payload: PaintData = req.body;
 
-    console.log('payload: ', payload);
+    const response = await axios.post(process.env.API_URL || '', payload);
 
-    const response = await axios.post(
-      'https://modulabchatgpt--hyanskygg.repl.co/api/paint',
-      payload,
-    );
     if (response.data.success) {
       return res.status(200).json({ url: response.data.data[0].url });
     } else {
