@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 
 const PaintModal = ({
   paintUrl,
@@ -28,13 +29,23 @@ const PaintModal = ({
             >
               다운로드
             </button>
-            <button className="btn btn-active btn-ghost" disabled={!paintBlobData}>
-              저장하기
-            </button>
+            {/* TODO: 이미지 클라이언트에 저장해보기 */}
+            {/*<button className="btn btn-active btn-ghost" disabled={!paintBlobData}>*/}
+            {/*  저장하기*/}
+            {/*</button>*/}
             <button
               className="btn"
               onClick={() => {
-                onHandleModal(false);
+                Swal.fire({
+                  text: '정말 닫으시겠습니까?',
+                  showCancelButton: true,
+                  confirmButtonText: '네',
+                  cancelButtonText: '아니오',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    onHandleModal(false);
+                  }
+                });
               }}
             >
               닫기
