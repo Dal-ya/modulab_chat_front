@@ -27,6 +27,12 @@ const Home = () => {
       return;
     }
 
+    // limit 초과된 경우
+    if (response?.data.url === 'LIMIT') {
+      alert('사용량이 초과되었습니다.');
+      return;
+    }
+
     setPaintUrl(response?.data.url);
 
     // 저장하기, 다운로드를 위해 미리 blob 파일 준비하기
