@@ -60,7 +60,7 @@ const Home = () => {
 
   useEffect(() => {
     let sid: NodeJS.Timeout;
-    console.log('ismutating: ', isMutating);
+
     if (isMutating) {
       sid = setTimeout(() => {
         setIsShowLoading(true);
