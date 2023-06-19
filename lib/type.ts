@@ -15,3 +15,8 @@ export interface ResponseFineTuneModel {
   created_at?: number;
   updated_at?: number;
 }
+
+export interface LoginForm {
+  email: string;
+  password: string;
+}
