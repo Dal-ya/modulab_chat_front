@@ -13,7 +13,8 @@ import { NextPageContext } from 'next';
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
 
-  console.log('session: ', session);
+  console.log('session:----> ', session);
+  console.log('session user::::', session?.user);
 
   if (!session) {
     return {

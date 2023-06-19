@@ -35,20 +35,59 @@ export default NextAuth({
           return null;
         }
 
-        return response.data.data; // { access_token: string }
+        // return response.data.data; // { access_token: string }
+        return {
+          id: +new Date(),
+          email: credentials.email,
+          accessToken: response.data.data.access_token,
+        };
       },
     }),
   ],
-  // session: {
-  //   // @ts-ignore
-  //   jwt: true,
-  // },
+  pages: {
+    signIn: '/login',
+  },
+  session: {
+    // @ts-ignore
+    jwt: true,
+    maxAge: 1 * 12 * 60 * 60,
+  },
+  jwt: {
+    // secret: 'test-jwt123',
+    maxAge: 1 * 12 * 60 * 60,
+  },
   callbacks: {
     // @ts-ignore
-    async session({ session }) {
-      console.log('token : ', session);
-      // session.access_token = token.access_token;
+    async jwt(token, user) {
+      console.log('jwt token:======= ', token);
+      if (user) {
+        token.accessToken = user.accessToken;
+      }
+      return token;
+    },
+
+    // @ts-ignore
+    async session({ session, token }) {
+      console.log('token:::', token);
+      // @ts-ignore
+      console.log('token.user:: ', token.token.token.user);
+      // session.accessToken = token.accessToken;
+      // @ts-ignore
+      session.user = token.token.token.user;
+      console.log('session::::::::', session);
       return session;
+    },
+    async signIn({ user: token, account, profile, email, credentials }) {
+      console.log('token:: ', token);
+      const isAllowedToSignIn = true;
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
     },
   },
 });
