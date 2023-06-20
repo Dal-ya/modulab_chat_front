@@ -10,18 +10,22 @@ import { ChangeEvent, Dispatch, SetStateAction, useState, FormEvent } from 'reac
 const utc = require('dayjs/plugin/utc');
 dayjs.extend(utc);
 
-const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-const FETCH_API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/list-fine-tune`;
-
 const FineTuneModelList = ({
   setIsFineTuneCreateLoading,
+  accessToken,
 }: {
   setIsFineTuneCreateLoading: Dispatch<SetStateAction<boolean>>;
+  accessToken: string;
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [fileValue, setFileValue] = useState<File | null>(null);
   const [modelName, setModelName] = useState('');
   const [removingModel, setRemovingModel] = useState<string[]>([]);
+
+  const fetcher = (url: string) =>
+    axios.get(url, { headers: { Authorization: `Bearer ${accessToken}` } }).then((res) => res.data);
+  const FETCH_API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/openai/list-fine-tune`;
+
   const { isLoading, data, error } = useSWR(FETCH_API_URL, fetcher);
   const { mutate } = useSWRConfig();
 
@@ -43,9 +47,9 @@ const FineTuneModelList = ({
 
       const response = await axios({
         method: 'POST',
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-fine-tune`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/openai/create-fine-tune`,
         data: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${accessToken}` },
       });
 
       if (!response.data.success) {
@@ -87,9 +91,9 @@ const FineTuneModelList = ({
 
       const response = await axios({
         method: 'DELETE',
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/delete-fine-tune`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/openai/delete-fine-tune`,
         data: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${accessToken}` },
       });
 
       if (!response.data.success) {
