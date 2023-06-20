@@ -112,6 +112,13 @@ const PaintForm = ({
           </button>
         </div>
       </form>
+      <p className="mt-2">
+        <small>*시간이 오래 걸릴 수 있으니 기다려주세요.</small>
+        <br />
+        <small>*생성된 이미지가 없다고 알럿이 뜨면 다시 시도해 주세요.</small>
+        <br />
+        <small>*창을 닫으면 다시 열기 어렵습니다, 다운로드 받아 주세요.</small>
+      </p>
     </div>
   );
 };

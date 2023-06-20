@@ -1,6 +1,29 @@
 import FineTuneModelList from '../../components/FineTune/FineTuneModelList';
 import FineTuneCreateLoading from '../../components/Loading';
 import { useState } from 'react';
+import { NextPageContext } from 'next';
+import { getSession } from 'next-auth/react';
+
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+
+  //@ts-ignore
+  if (!session || !session.user?.accessToken) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      //@ts-ignore
+      accessToken: session.user?.accessToken,
+    },
+  };
+}
 
 const FineTunePage = () => {
   const [isFineTuneCreateLoading, setIsFineTuneCreateLoading] = useState(false);

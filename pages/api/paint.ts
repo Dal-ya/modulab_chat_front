@@ -4,11 +4,16 @@ import { PaintData, ResultPaintData } from '../../lib/type';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResultPaintData>) {
   try {
-    const payload: PaintData = req.body;
+    const payload: { paintData: PaintData; accessToken: string } = req.body;
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/paint` || '',
-      payload,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/openai/paint` || '',
+      { ...payload.paintData },
+      {
+        headers: {
+          Authorization: `Bearer ${payload.accessToken}`,
+        },
+      },
     );
 
     if (response.data.success) {
