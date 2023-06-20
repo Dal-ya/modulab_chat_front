@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth/next';
 import Credentials from 'next-auth/providers/credentials';
 import axios from 'axios';
+import { JWT } from 'next-auth/jwt';
+import { Session, User } from 'next-auth';
 
 export default NextAuth({
   providers: [
@@ -17,7 +19,7 @@ export default NextAuth({
           type: 'password',
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<any> {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('이메일과 패스워드는 필수 항목입니다.');
         }
@@ -35,11 +37,10 @@ export default NextAuth({
           return null;
         }
 
-        // return response.data.data; // { access_token: string }
         return {
           id: +new Date(),
           email: credentials.email,
-          accessToken: response.data.data.access_token,
+          accessToken: response.data.data.access_token, // exp: 24h
         };
       },
     }),
@@ -48,46 +49,36 @@ export default NextAuth({
     signIn: '/login',
   },
   session: {
-    // @ts-ignore
-    jwt: true,
-    maxAge: 1 * 12 * 60 * 60,
+    maxAge: 12 * 60 * 60, // 12h
   },
   jwt: {
-    // secret: 'test-jwt123',
-    maxAge: 1 * 12 * 60 * 60,
+    maxAge: 12 * 60 * 60, // 12h
   },
+  secret: process.env.AUTH_SECRET,
   callbacks: {
-    // @ts-ignore
-    async jwt(token, user) {
-      console.log('jwt token:======= ', token);
-      if (user) {
-        token.accessToken = user.accessToken;
-      }
+    async jwt(token: JWT) {
       return token;
     },
 
-    // @ts-ignore
-    async session({ session, token }) {
-      console.log('token:::', token);
-      // @ts-ignore
-      console.log('token.user:: ', token.token.token.user);
-      // session.accessToken = token.accessToken;
-      // @ts-ignore
-      session.user = token.token.token.user;
-      console.log('session::::::::', session);
-      return session;
-    },
-    async signIn({ user: token, account, profile, email, credentials }) {
-      console.log('token:: ', token);
-      const isAllowedToSignIn = true;
-      if (isAllowedToSignIn) {
-        return true;
-      } else {
-        // Return false to display a default error message
-        return false;
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
+      if (token.token) {
+        // @ts-ignore
+        // authorize 콜백함수에서 리턴한 값 넣기
+        session.user = token.token.token.user;
       }
+
+      /* session
+        {
+          user: {
+            id: 1687223438635,
+            email: 'sherlock@abc.com',
+            accessToken: 'eyJhbGci...'
+          },
+          expires: '2023-06-20T13:10:39.456Z'
+        }
+      */
+
+      return session;
     },
   },
 });

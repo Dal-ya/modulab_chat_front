@@ -3,8 +3,10 @@ import { TextInput, PasswordInput, Button, Group, Box } from '@mantine/core';
 import { LoginForm } from '../../lib/type';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const Login = () => {
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const router = useRouter();
   const form = useForm<LoginForm>({
     initialValues: {
@@ -19,19 +21,31 @@ const Login = () => {
   });
 
   const onSubmit = async (values: LoginForm) => {
-    console.log('submit!', values);
-    const result = await signIn('credentials', {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-      callbackUrl: '/',
-    });
+    try {
+      setIsLoginLoading(true);
 
-    console.log('sign in result: ', result);
-    // fail --> {error: 'CredentialsSignin', status: 401, ok: false, url: null}
-    // success --> {error: null, status: 200, ok: true, url: 'http://localhost:3000/'}
+      const result = await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+        callbackUrl: '/',
+      });
 
-    await router.push('/');
+      // result
+      // fail --> {error: 'CredentialsSignin', status: 401, ok: false, url: null}
+      // success --> {error: null, status: 200, ok: true, url: 'http://localhost:3000/'}
+
+      if (result?.error) {
+        window.alert('로그인 실패. 다시 시도해 주세요.');
+        setIsLoginLoading(false);
+        return;
+      }
+
+      await router.push('/');
+    } catch (err) {
+      console.log(err);
+      setIsLoginLoading(false);
+    }
   };
 
   return (
@@ -56,7 +70,7 @@ const Login = () => {
           />
 
           <Group position="center" mt="md">
-            <Button className="btn btn-primary" type="submit">
+            <Button className="btn btn-primary" type="submit" disabled={isLoginLoading}>
               Login
             </Button>
           </Group>
