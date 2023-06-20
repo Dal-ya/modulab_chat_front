@@ -63,6 +63,7 @@ const Login = () => {
           />
 
           <PasswordInput
+            className="mt-2"
             withAsterisk
             placeholder="Password"
             label="Password"
@@ -76,6 +77,15 @@ const Login = () => {
           </Group>
         </form>
       </Box>
+
+      <div className="mt-16">
+        <button
+          className="btn btn-outline btn-info btn-sm mr-2"
+          onClick={() => router.push('/signup')}
+        >
+          SignUp
+        </button>
+      </div>
     </div>
   );
 };
