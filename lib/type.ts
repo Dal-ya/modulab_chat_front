@@ -27,3 +27,9 @@ export interface SignUpForm {
   password: string;
   secret: string;
 }
+
+export interface Chat {
+  id: string;
+  botMsg: string;
+  userMsg: string;
+}
