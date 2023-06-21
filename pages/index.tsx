@@ -45,9 +45,7 @@ const Home = ({ accessToken }: { accessToken: string }) => {
               className="w-[220px] h-[269px] cursor-pointer"
               shadow="sm"
               padding="sm"
-              onClick={() => {
-                router.push('/paint');
-              }}
+              onClick={() => router.push('/paint')}
             >
               <Card.Section>
                 <Image
@@ -70,9 +68,7 @@ const Home = ({ accessToken }: { accessToken: string }) => {
               className="w-[220px] h-[269px] cursor-pointer"
               shadow="sm"
               padding="sm"
-              onClick={() => {
-                router.push('/fine');
-              }}
+              onClick={() => router.push('/fine')}
             >
               <Card.Section>
                 <Image
@@ -91,7 +87,12 @@ const Home = ({ accessToken }: { accessToken: string }) => {
               </Text>
             </Card>
 
-            <Card className="w-[220px] h-[269px] cursor-pointer" shadow="sm" padding="sm">
+            <Card
+              className="w-[220px] h-[269px] cursor-pointer"
+              shadow="sm"
+              padding="sm"
+              onClick={() => router.push('/embed')}
+            >
               <Card.Section>
                 <Image
                   src="https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
