@@ -1,5 +1,5 @@
 import { Card, Flex, Image, Text, Button } from '@mantine/core';
-import { getSession, signOut } from 'next-auth/react';
+import { getSession, signOut, useSession } from 'next-auth/react';
 import { NextRouter, useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 
@@ -26,6 +26,9 @@ export async function getServerSideProps(context: NextPageContext) {
 
 const Home = ({ accessToken }: { accessToken: string }) => {
   const router: NextRouter = useRouter();
+  const { data: session, status } = useSession();
+  console.log('client side session: ', session);
+  console.log('status: ', status);
 
   return (
     <div className="container mx-auto px-4 max-w-3xl bg-amber-50 rounded-lg mt-4 pb-8 pt-8">

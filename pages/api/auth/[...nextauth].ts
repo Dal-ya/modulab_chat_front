@@ -3,6 +3,8 @@ import Credentials from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { JWT } from 'next-auth/jwt';
 import { Session, User } from 'next-auth';
+import { nanoid } from 'nanoid';
+import { AuthenticatedUser } from '../../../lib/type';
 
 export default NextAuth({
   providers: [
@@ -19,7 +21,7 @@ export default NextAuth({
           type: 'password',
         },
       },
-      async authorize(credentials): Promise<any> {
+      async authorize(credentials): Promise<AuthenticatedUser | null> {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('이메일과 패스워드는 필수 항목입니다.');
         }
@@ -38,7 +40,7 @@ export default NextAuth({
         }
 
         return {
-          id: +new Date(),
+          id: nanoid(),
           email: credentials.email,
           accessToken: response.data.data.access_token, // exp: 24h
         };
@@ -56,22 +58,25 @@ export default NextAuth({
   },
   secret: process.env.AUTH_SECRET,
   callbacks: {
-    async jwt(token: JWT) {
+    async jwt({ token, user }: { token: JWT; user: AuthenticatedUser | any }): Promise<JWT> {
+      if (user) {
+        token.accessToken = user.accessToken;
+      }
       return token;
     },
 
-    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
-      if (token.token) {
-        // @ts-ignore
-        // authorize 콜백함수에서 리턴한 값 넣기
-        session.user = token.token.token.user;
+    async session({ session, token }: { session: Session | any; token: JWT }): Promise<Session> {
+      if (session.user) {
+        session.user.accessToken = token.accessToken;
       }
 
       /* session
         {
           user: {
-            id: 1687223438635,
+            id: dfDFp-ddd,
+            name: undefined,
             email: 'sherlock@abc.com',
+            image: undefined,
             accessToken: 'eyJhbGci...'
           },
           expires: '2023-06-20T13:10:39.456Z'

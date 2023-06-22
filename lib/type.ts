@@ -1,3 +1,5 @@
+import { User } from 'next-auth';
+
 export interface PaintData {
   author: string;
   description: string;
@@ -32,4 +34,10 @@ export interface Chat {
   id: string;
   botMsg: string;
   userMsg: string;
+}
+
+export interface AuthenticatedUser extends User {
+  id: string;
+  email: string;
+  accessToken: string;
 }
