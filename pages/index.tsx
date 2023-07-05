@@ -112,6 +112,29 @@ const Home = ({ accessToken }: { accessToken: string }) => {
                 godly.ai 활용 임베딩하기
               </Text>
             </Card>
+
+            <Card
+              className="w-[220px] h-[269px] cursor-pointer"
+              shadow="sm"
+              padding="sm"
+              onClick={() => router.push('/functions')}
+            >
+              <Card.Section>
+                <Image
+                  src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                  height={160}
+                  alt=""
+                />
+              </Card.Section>
+
+              <Text weight={300} size="lg" mt="md">
+                FUNCTIONS
+              </Text>
+
+              <Text mt="xs" color="dimmed" size="sm">
+                functions 활용하기
+              </Text>
+            </Card>
           </Flex>
         </div>
       </div>
